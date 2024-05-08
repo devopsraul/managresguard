@@ -1,0 +1,55 @@
+# Archivos y carpetas generados por Flutter/Dart
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# Archivos y carpetas generados por Android
+**/android/**/gradle-wrapper.jar
+.gradle/
+**/android/captures/
+**/android/gradlew.bat
+**/android/gradlew
+**/android/local.properties
+**/android/key.properties
+*.jks
+
+# Archivos y carpetas generados por iOS
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/ephemeral
+**/ios/Flutter/app.flx
+**/ios/Flutter/app.zip
+**/ios/Flutter/flutter_assets/
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+**/ios/**/*sync/
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+
+# Archivos y carpetas generados por los IDEs
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Otros
+.DS_Store
+*.sw?
+*.out
+*.bak
+*.swp
+*~
+.project
+.classpath
+.c9/
+*.backup*
+*+~
+.RELEASE_NOTES.md
