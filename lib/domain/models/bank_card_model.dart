@@ -1,14 +1,14 @@
 class BankCardModel {
   String image;
-  String icon;
-  String number;
+  String image2;
+  String placa;
   double balance;
   List<ExpenseModel> expenses;
 
   BankCardModel({
     required this.image,
-    required this.icon,
-    required this.number,
+    required this.image2,
+    required this.placa,
     required this.balance,
     this.expenses = const [],
   });
@@ -31,8 +31,8 @@ class ExpenseModel {
 final cards = [
   BankCardModel(
     image: 'assets/image/card.png',
-    icon: 'assets/image/icon_2.jpeg',
-    number: "0912",
+    image2: 'assets/image/patriot-chevrolet.png',
+    placa: "NNX8C53",
     balance: 345.00,
     expenses: [
       ExpenseModel(
@@ -43,9 +43,9 @@ final cards = [
     ],
   ),
   BankCardModel(
-    image: 'assets/image/bg_1.jpeg',
-    icon: 'assets/image/icon_1.png',
-    number: "0912",
+    image: 'assets/image/card.png',
+    image2: 'assets/image/patriot-chevrolet.png',
+    placa: "NNX8C53",
     balance: 123.00,
     expenses: [
       ExpenseModel(
@@ -57,9 +57,9 @@ final cards = [
     ],
   ),
   BankCardModel(
-    image: 'assets/image/bg_2.jpeg',
-    icon: 'assets/image/icon_3.png',
-    number: "8743",
+    image: 'assets/image/card.png',
+    image2: 'assets/image/patriot-chevrolet.png',
+    placa: "NNX8C53",
     balance: 789.00,
     expenses: [
       ExpenseModel(

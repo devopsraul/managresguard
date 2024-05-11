@@ -35,13 +35,13 @@ class BankCard extends StatelessWidget {
             children: [
               ClipOval(
                 child: Image.asset(
-                  bankCard.icon,
-                  height: Constants.padding * 3,
-                  width: Constants.padding * 3,
+                  bankCard.image2,
+                  height: Constants.padding * 5.1,
+                  width: Constants.padding * 5.1,
                 ),
               ),
               Text(
-                bankCard.number,
+                bankCard.placa,
                 style: Theme.of(context)
                     .textTheme
                     .headlineMedium!

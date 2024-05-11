@@ -1,15 +1,49 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-//import 'package:flutter/widgets.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:managresguard/constants.dart';
 
 class ProfileSection extends StatelessWidget {
-  const ProfileSection({
+  ProfileSection({
     super.key,
     required this.verticalPos,
   });
 
   final double verticalPos;
+    // Lista de categorías y cantidad de lugares
+  final List<Map<String, dynamic>> categories = [
+    {
+      'title': 'Assistência 24h',
+      'places': '-',
+      'icon': Icons.assist_walker
+    },
+    {
+      'title': 'Financiero',
+      'places': '-',
+      'icon': Icons.car_rental
+    },
+    {
+      'title': 'Fale Conosco',
+      'places': '-',
+      'icon': Icons.phone_callback
+    },
+    {
+      'title': 'Furto e Roubo',
+      'places': '-',
+      'icon': Icons.rocket
+    },
+    {
+      'title': 'Oficinas',
+      'places': '-',
+      'icon': Icons.link_off
+    },
+    {
+      'title': 'Whatsapp',
+      'places': '-',
+      'icon': Icons.whatshot
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -20,24 +54,21 @@ class ProfileSection extends StatelessWidget {
             padding:
                 const EdgeInsets.symmetric(horizontal: Constants.padding * 2.5),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFDEDE),
+              color: const Color.fromRGBO(255, 219, 0, 0.6),
               borderRadius: BorderRadius.circular(Constants.radius),
             ),
             child: Stack(
               children: [
                 Center(child: buildHeader(context)),
                 Opacity(
-                  opacity: lerpDouble(0.0, 1.0, verticalPos/MediaQuery.of(context).size.height)!,
-                  // duration: const Duration(milliseconds: 300),
+                  opacity: lerpDouble(0.0, 1.0, verticalPos / MediaQuery.of(context).size.height)!,
                   child: verticalPos > 250
                       ? Center(
                           child: SingleChildScrollView(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const SizedBox(
-                                  height: 650,
-                                ),
+                                const SizedBox(height: 600),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -48,126 +79,95 @@ class ProfileSection extends StatelessWidget {
                                           width: 60,
                                           height: 60,
                                           decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(60),
-                                              color: Colors.white),
-                                          child: const Icon(
-                                            Icons.search,
-                                            color: Colors.black,
+                                            borderRadius:
+                                                BorderRadius.circular(60),
+                                            color: Colors.white,
                                           ),
+                                          child: const Icon(Icons.search,
+                                              color: Colors.black),
                                         ),
                                         const SizedBox(
-                                          height: Constants.padding,
-                                        ),
+                                            height: Constants.padding),
                                         const Text(
                                           "Search",
                                           style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w500,
-                                          ),
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w500),
                                         )
                                       ],
                                     ),
-                                    buildUserAvatar(
-                                      'assets/image/user1.png',
-                                      "Alexa",
-                                    ),
-                                    buildUserAvatar(
-                                      'assets/image/user2.png',
-                                      "Aldo",
-                                    ),
-                                    buildUserAvatar(
-                                      'assets/image/user3.png',
-                                      "John",
-                                    ),
+                                    //buildUserAvatar('assets/image/user1.png', "Alexa"),
+                                    //buildUserAvatar('assets/image/user2.png', "Aldo"),
+                                    //buildUserAvatar('assets/image/user3.png', "John"),
                                   ],
                                 ),
-                                const SizedBox(
-                                  height: Constants.padding * 2,
-                                ),
+                                const SizedBox(height: Constants.padding * 2),
+                                // Container for pay services expanded
                                 Container(
-                                  height: 150,
+                                  padding: const EdgeInsets.all(Constants.padding),
                                   decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.circular(Constants.radius),
-                                    color: Colors.blueAccent.shade100,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(
-                                            Constants.padding),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            Constants.radius,
-                                          ),
-                                          child: Image.asset(
-                                            'assets/image/quinielapro.png',
-                                          ),
-                                        ),
-                                      ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          const Text(
-                                            "Quiniela PRO",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.purple
-                                            ),
-                                            onPressed: () {},
-                                            child: const Text("Download App"),
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: Constants.padding * 2,
-                                ),
-                                Container(
-                                  padding:
-                                      const EdgeInsets.all(Constants.padding),
-                                  decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.circular(Constants.radius),
+                                    borderRadius: BorderRadius.circular(Constants.radius),
                                     color: Colors.white,
                                   ),
                                   child: const Column(
                                     children: [
                                       ListTile(
                                         leading: Icon(
-                                          Icons.credit_card,
-                                          color: Colors.black87,
-                                          size: 30,
+                                          MaterialCommunityIcons.home_assistant,
+                                          color: Colors.black87, 
+                                          size: 30
                                         ),
                                         title: Text(
-                                          "Pay for services",
+                                          "Assistência 24h",
                                           style: TextStyle(
-                                              fontWeight: FontWeight.bold),
+                                            fontWeight: FontWeight.bold
+                                          )
                                         ),
+                                      ),
+                                      // Repetir o expandir elementos adicionales aquí si es necesario
+                                      ListTile(
+                                        leading: Icon(MaterialCommunityIcons.finance,
+                                            color: Colors.black87, size: 30),
+                                        title: Text("Financiero",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold)),
                                       ),
                                       ListTile(
-                                        leading: Icon(
-                                          Icons.money_rounded,
-                                          color: Colors.black87,
-                                          size: 30,
-                                        ),
-                                        title: Text(
-                                          "Take a loan",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        trailing: Chip(label: Text("4%")),
+                                        leading: Icon(MaterialCommunityIcons.phone_classic,
+                                            color: Colors.black87, size: 30),
+                                        title: Text("Fale Conosco",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold)),
                                       ),
+                                      ListTile(
+                                        leading: Icon(MaterialCommunityIcons.robber,
+                                            color: Colors.black87, size: 30),
+                                        title: Text("Furto e Roubo",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                      ListTile(
+                                        leading: Icon(MaterialCommunityIcons.office_building,
+                                            color: Colors.black87, size: 30),
+                                        title: Text("Oficinas",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                      ListTile(
+                                        leading: Icon(MaterialCommunityIcons.whatsapp,
+                                            color: Colors.black87, size: 30),
+                                        title: Text("Whatsapp",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                      //ListTile(
+                                      //  leading: Icon(Icons.money_rounded,
+                                      //      color: Colors.black87, size: 30),
+                                      //  title: Text("Take a loan",
+                                      //      style: TextStyle(
+                                      //          fontWeight: FontWeight.bold)),
+                                      //  trailing: Chip(label: Text("4%")),
+                                      //),
                                       Padding(
                                         padding:
                                             EdgeInsets.all(Constants.padding),
@@ -176,7 +176,7 @@ class ProfileSection extends StatelessWidget {
                                           size: 30,
                                           color: Colors.black54,
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -193,14 +193,12 @@ class ProfileSection extends StatelessWidget {
         Container(
           height: 5,
           width: 50,
-          margin: const EdgeInsets.symmetric(
-            vertical: Constants.padding,
-          ),
+          margin: const EdgeInsets.symmetric(vertical: Constants.padding),
           decoration: BoxDecoration(
             color: Colors.blueGrey.shade800,
             borderRadius: BorderRadius.circular(Constants.radius),
           ),
-        )
+        ),
       ],
     );
   }
@@ -209,17 +207,18 @@ class ProfileSection extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 30,
-            foregroundImage: AssetImage(
-              image,
-            ),
+            foregroundImage: AssetImage(image),
           ),
           const SizedBox(
-            height: Constants.padding,
+            height: Constants.padding
           ),
           Text(
             name,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-          )
+            style: const TextStyle(
+              fontSize: 18, 
+              fontWeight: FontWeight.w500
+            )
+          ),
         ],
       );
 
@@ -229,13 +228,12 @@ class ProfileSection extends StatelessWidget {
       children: [
         RichText(
           text: TextSpan(
-            text: "Hello",
+            text: "Oi,",
             style: Theme.of(context).textTheme.headlineSmall,
             children: const [
               TextSpan(
-                text: " Bruno",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              )
+                  text: " Bruno",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
             ],
           ),
         ),
@@ -248,9 +246,8 @@ class ProfileSection extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: CircleAvatar(
                   radius: 25,
-                  foregroundImage: AssetImage(
-                    'assets/image/profile.jpeg',
-                  ),
+                  backgroundImage: AssetImage('assets/image/profile.png'),
+                  backgroundColor: Colors.transparent,
                 ),
               ),
               Align(
@@ -258,16 +255,12 @@ class ProfileSection extends StatelessWidget {
                 child: Container(
                   width: 50,
                   height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: const Icon(Icons.credit_card_outlined),
+                  child: const Icon(Icons.edit, color: Colors.grey),
                 ),
-              )
+              ),
             ],
           ),
-        )
+        ),
       ],
     );
   }

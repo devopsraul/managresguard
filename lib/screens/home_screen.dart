@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:managresguard/constants.dart';
 import 'package:managresguard/domain/models/bank_card_model.dart';
-import 'package:managresguard/widgets/add_card.dart';
-import 'package:managresguard/widgets/bank_card.dart';
+import 'package:managresguard/screens/components/bank_card.dart';
 import 'package:managresguard/widgets/profile_section.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -47,6 +45,24 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void onVerticalDrad(DragUpdateDetails details) {
+    setState(() {
+      verPos += details.primaryDelta!;
+      verPos = verPos.clamp(0, double.infinity);
+    });
+  }
+
+  void onVerticalDradEnds(DragEndDetails details) {
+    setState(() {
+      if(details.primaryVelocity! > 500 || verPos > size.height / 2){
+        verPos = size.height - 40;
+      }
+      if(details.primaryVelocity! < -500 || verPos < size.height / 2){
+        verPos = 0;
+      }
+    });
+  }
+
   @override
   void initState() {
     _pg.addListener(pageListener);
@@ -65,27 +81,39 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Stack(
         children: [
+          // Profile Section
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+            top: MediaQuery.of(context).padding.top - verPos,
+            left: (size.width * .1 - verPos).clamp(0, double.infinity),
+            right: (size.width * .1 - verPos).clamp(0, double.infinity),
+            bottom: size.height * .75 - verPos,
+            child: AnimatedSwitcher(
+              switchInCurve: Curves.easeOut,
+              switchOutCurve: Curves.easeIn,
+              duration: const Duration(milliseconds: 150),
+              child: GestureDetector(
+                      onVerticalDragUpdate: onVerticalDrad,
+                      onVerticalDragEnd: onVerticalDradEnds,
+                      child: ProfileSection(verticalPos: verPos,),
+                    ),
+            ),
+          ),
+          // Card veiculo Section
           Positioned(
-            top: (size.height * .25) + verPos,
-            bottom: size.height * .2 - verPos,
-            left: 0,
-            right: 0,
+            top: (size.height * 0.25) + verPos,
+            bottom: size.height * 0.55 - verPos,
+            left: -5,
+            right: -5,
             child: PageView(
               controller: _pg,
               children: cards.map((e) => BankCard(bankCard: e)).toList(),
             ),
           ),
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-            top: MediaQuery.of(context).padding.top - verPos,
-            left: size.width * .1 - verPos,
-            right: size.width * .1 - verPos,
-            bottom: size.height * .75 - verPos,
-            child: ProfileSection(verticalPos: verPos),
-          ),
+          // Card Detais veiculo Section
           Positioned(
-            top: size.height * .85 + verPos,
+            top: size.height * .475 + verPos,
             left: size.width * .1,
             right: size.width * .1,
             child: TweenAnimationBuilder(
