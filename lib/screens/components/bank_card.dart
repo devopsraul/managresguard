@@ -8,7 +8,7 @@ class BankCard extends StatelessWidget {
     required this.bankCard,
   }) : super(key: key);
 
-  final BankCardModel bankCard;
+  final VeiculoModel bankCard;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class BankCard extends StatelessWidget {
       padding: const EdgeInsets.all(Constants.padding * 2),
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage(bankCard.image),
+          image: AssetImage(bankCard.card),
           fit: BoxFit.cover,
         ),
         borderRadius: BorderRadius.circular(
@@ -35,7 +35,7 @@ class BankCard extends StatelessWidget {
             children: [
               ClipOval(
                 child: Image.asset(
-                  bankCard.image2,
+                  bankCard.imgcarro,
                   height: Constants.padding * 5.1,
                   width: Constants.padding * 5.1,
                 ),
@@ -50,7 +50,8 @@ class BankCard extends StatelessWidget {
             ],
           ),
           Text(
-            "\$${bankCard.balance.toStringAsFixed(2)}",
+            //"\$${bankCard.active.toStringAsFixed(2)}",
+            bankCard.situacao,
             style: Theme.of(context)
                 .textTheme
                 .headlineMedium!

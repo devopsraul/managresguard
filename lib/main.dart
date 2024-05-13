@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:managresguard/data/helpers/http.dart';
 import 'package:managresguard/domain/repositories/authentication_repository.dart';
+import 'package:managresguard/screens/veiculo_screen.dart';
 import 'data/data_source/remote/authentication_api.dart';
 import 'data/repositories_empl/authentication_repository_impl.dart';
 import 'screens/home_screen.dart'; // Asegúrate de ajustar la ruta si es necesario
@@ -17,10 +19,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown
+    ]);
+
+    return MaterialApp(
       title: 'ResGuard App',
+      theme: ThemeData(
+        fontFamily: 'Modelica',
+      ),
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }
