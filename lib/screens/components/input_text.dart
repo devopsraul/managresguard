@@ -6,7 +6,9 @@ class InputText extends StatelessWidget {
   final bool obscuretext, borderenabled;
   final double fontsize;
   final void Function(String text)? onChanged;
-  final String Function(String? text)? validator;
+  final String? Function(String?)? validator;
+  final Color color;
+  final Color labelcolor;
 
   const InputText({
     super.key,
@@ -17,6 +19,8 @@ class InputText extends StatelessWidget {
     this.fontsize = 15,
     this.onChanged,
     this.validator,
+    this.color = Colors.black,
+    this.labelcolor = Colors.black45,
   });
 
   @override
@@ -28,17 +32,20 @@ class InputText extends StatelessWidget {
       validator: validator,
       style: TextStyle(
         fontSize: fontsize,
+        color: color,
       ),
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(vertical: 5),
         enabledBorder: borderenabled
             ? const UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.black12),
+                borderSide: BorderSide(color: Colors.white24),
               )
             : InputBorder.none,
         labelText: label,
-        labelStyle:
-            const TextStyle(color: Colors.black45, fontWeight: FontWeight.w500),
+        labelStyle: TextStyle(
+          color: labelcolor, 
+          fontWeight: FontWeight.w500
+        ),
       ),
     );
   }

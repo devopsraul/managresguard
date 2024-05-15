@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:managresguard/screens/components/input_text.dart';
+import 'package:managresguard/utils/dialogs.dart';
 import 'package:managresguard/utils/responsive.dart';
+import '../data/data_source/remote/authentication_api.dart';
+import '../data/helpers/http.dart';
+import '../data/repositories_empl/authentication_repository_impl.dart';
+import '../domain/repositories/authentication_repository.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -8,13 +13,50 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginScreen> {
-
   GlobalKey<FormState> _formKey = GlobalKey();
   String _cpf ='', _senha = '';
+  final http = Http(baseUrl: 'https://api-integracao.ileva.com.br');
+  late final AuthenticacionRepository auth = AuthenticacionRepositoryImpl(AutheticationAPI(http));
 
-  _submit(){
+  Future<void> _submit() async{
     final isOk = _formKey.currentState?.validate();
-    //if (isOk){ }
+    print("form is ok $isOk");
+    if (isOk!) {  
+      //ProgressDialog.show(context);
+      try {
+        // Configurar el token manualmente para pruebas
+        http.token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGllbnRlX25pY2tuYW1lIjoicmVzZ3VhcmQiLCJpZCI6MiwiaGFzaCI6IjE2YzllNGI2Yjk0ZSJ9.ith7n7CDfwgaKt9k0J-D7SXf0v1u9taSrZ3m0HWS0F0';
+        //print("Token configurado: ${http._token}");
+
+        // Muestra un indicador de progreso si es necesario
+        // ProgressDialog.show(context);
+        
+        final response = await auth.login(
+          _cpf, 
+          _senha, // "cityslicka"
+        );
+        
+        // Maneja la respuesta y actualiza el estado si es necesario
+        print(response);
+        // Si necesitas actualizar el estado de la UI, usa setState
+        setState(() {
+          ///_result = response;
+          print(response);
+        });
+        
+      } catch (error) {
+        // Maneja errores y muestra un mensaje al usuario si es necesario
+        print("Error: $error");
+        // Muestra un mensaje de error al usuario
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text('Error: $error')),
+        // );
+      } finally {
+        // Oculta el indicador de progreso si es necesario
+        // ProgressDialog.dismiss(context);
+      }
+    }
+    //ProgressDialog.dismiss(context);
   }
 
   @override
@@ -23,10 +65,10 @@ class _LoginFormState extends State<LoginScreen> {
 
 
     return Positioned(
-      bottom: 30,
+      bottom: -20,
       child: Container(
         constraints: BoxConstraints(
-          maxWidth: responsive.istablet ? 430 : 300
+          maxWidth: responsive.istablet ? 430 : 280
         ),
         child: Form(
           key: _formKey,
@@ -36,6 +78,8 @@ class _LoginFormState extends State<LoginScreen> {
                 keyboardtype: TextInputType.number,            
                 fontsize: responsive.dp(responsive.istablet ? 1.2 : 1.4),
                 label: "CPF",
+                color: Colors.white,
+                labelcolor: Colors.white,
                 onChanged: (text){
                   print("emal $text");
                   _cpf = text;
@@ -61,6 +105,8 @@ class _LoginFormState extends State<LoginScreen> {
                     Expanded(
                       child: InputText(
                         label: "SENHA",
+                        color: Colors.white,
+                        labelcolor: Colors.white,
                         keyboardtype: TextInputType.url,
                         obscuretext: true,
                         borderenabled: false,
@@ -73,7 +119,7 @@ class _LoginFormState extends State<LoginScreen> {
                           if (text!.trim().length == 0) {
                             return "senha invalida";
                           }
-                          return '';
+                          return null;
                         },
                       ),
                     ),
@@ -83,14 +129,15 @@ class _LoginFormState extends State<LoginScreen> {
                       },
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.black38,
-                        padding: const EdgeInsets.symmetric(
+                        padding: EdgeInsets.symmetric(
                             vertical: 10), // Color del texto
                       ),
                       child: Text(
-                        'Esqueci Minha Senha',
+                        'Esqueci Senha',
                         style: TextStyle(
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.bold,
                           fontSize: responsive.dp(1.5),
+                          color: Colors.white60,
                         ),
                       ),
                     ),
@@ -108,9 +155,7 @@ class _LoginFormState extends State<LoginScreen> {
                       const RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(
-                            10
-                          )
+                          bottomRight: Radius.circular(10),
                         ), // Da un borde redondeado al botón
                       ),
                     ),

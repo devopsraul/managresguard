@@ -7,8 +7,14 @@ typedef Parser<T> = T Function(dynamic data);
 
 class Http {
   final String baseUrl;
-
-  Http({this.baseUrl = ''});
+  String? _token;
+  //Http({this.baseUrl = '', String? token});
+  Http({this.baseUrl = '', String? token}) : _token = token;
+  
+  set token(String? token) {
+    //_token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGllbnRlX25pY2tuYW1lIjoicmVzZ3VhcmQiLCJpZCI6MiwiaGFzaCI6IjE2YzllNGI2Yjk0ZSJ9.ith7n7CDfwgaKt9k0J-D7SXf0v1u9taSrZ3m0HWS0F0';
+    _token = token;
+  }
 
   Future<HttpResult<T>> request<T>(
     String path, {
@@ -36,19 +42,31 @@ class Http {
         });
       }
 
+      // Agrega el token a los headers si está presente
+      final combinedHeaders = {
+        ...headers,
+        if (_token != null) 'access_token': '$_token',
+      };
+
+
       final response = await sendRequest(
         url: url,
         method: method,
-        headers: headers,
+        headers: combinedHeaders,
         body: body,
         timeOut: timeOut,
       );
+
+      //print("Response headers: ${response.headers}");
 
       data = parseResponseBody(response.body);
       statusCode = response.statusCode;
       if (statusCode >= 400) {
         throw HttpError(
-            exception: null, stackTrace: StackTrace.current, data: data);
+          exception: null, 
+          stackTrace: StackTrace.current, 
+          data: data
+        );
       }
 
       return HttpResult<T>(

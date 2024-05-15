@@ -54,12 +54,10 @@ class _TmpPageState extends State<TmpPage> {
       AutheticationAPI(http)
     );
 
-    auth
-        .login(
+    auth.login(
           "eve.holt@reqres.in",
           "cityslicka",
-        )
-        .then(
+        ).then(
           (value) => print(value),
         );
   }

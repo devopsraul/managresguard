@@ -26,7 +26,13 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Container(
             width: double.infinity,
             height: responsive.height,
-            color: Colors.white,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/image/banner.png"),
+                fit: BoxFit.cover,
+              ),
+            ),
+            //color: Colors.white,
             child: Stack(
               alignment: Alignment.center,
               children: <Widget>[
@@ -35,12 +41,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       children: <Widget>[
                         SizedBox(
-                          height: responsive.dp(2),
+                          height: responsive.dp(9),
                         ),
                         Text(
                           "Oi, Bem Vindo",
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: responsive.dp(1.5)),
+                          style: TextStyle(
+                            fontSize: responsive.dp(2.5),
+                            color: Colors.black54,
+                          ),
                         ),
                       ],
                     )),

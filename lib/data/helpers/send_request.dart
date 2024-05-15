@@ -18,7 +18,7 @@ Future<Response> sendRequest({
   required Duration timeOut,
 }) {
   var finalHeaders = {...headers};
-  if (method != HttpMethod.get) {
+  if (method == HttpMethod.get) {
     final ContentType = headers['Content-Type'];
 
     if (ContentType == null || ContentType.contains("application/json")) {
@@ -29,45 +29,45 @@ Future<Response> sendRequest({
 
   final client = Client();
 
+  //Imprime los encabezados para depuración
+  //print("Final Headers in sendRequest: $finalHeaders");
+
   switch (method) {
     case HttpMethod.get:
-      return client
-          .get(
-            url,
-            headers: finalHeaders,
-          )
-          .timeout(timeOut);
+      return client.get(
+              url,
+              headers: finalHeaders,
+            )
+            .timeout(timeOut);
     case HttpMethod.post:
-      return client
-          .post(
+      return client.post(
             url,
             headers: finalHeaders,
             body: body,
           )
           .timeout(timeOut);
     case HttpMethod.put:
-      return client
-          .put(
+      return client.put(
             url,
             headers: finalHeaders,
             body: body,
           )
           .timeout(timeOut);
     case HttpMethod.patch:
-      return client
-          .patch(
+      return client.patch(
             url,
             headers: finalHeaders,
             body: body,
           )
           .timeout(timeOut);
     case HttpMethod.delete:
-      return client
-          .delete(
+      return client.delete(
             url,
             headers: finalHeaders,
             body: body,
           )
           .timeout(timeOut);
+    default:
+      throw UnsupportedError('Unsupported HTTP method');
   }
 }
