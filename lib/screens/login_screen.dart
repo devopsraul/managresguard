@@ -13,19 +13,22 @@ import 'inicio_screen.dart';
 import 'veiculo_screen.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginFormState createState() => _LoginFormState();
 }
 
 class _LoginFormState extends State<LoginScreen> {
-  GlobalKey<FormState> _formKey = GlobalKey();
+  final GlobalKey<FormState> _formKey = GlobalKey();
   String _cpf = '', _senha = '';
   final http = Http(baseUrl: 'https://api-integracao.ileva.com.br');
-  late final AssociadoRepository auth = AssociadoRepositoryImpl(AssociadoAPI(http));
+  late final AssociadoRepository auth =
+      AssociadoRepositoryImpl(AssociadoAPI(http));
 
   Future<void> _submit() async {
     final isOk = _formKey.currentState?.validate();
-    print("form is ok $isOk");
+
     if (isOk!) {
       try {
         // Configurar el token manualmente para pruebas
@@ -43,19 +46,15 @@ class _LoginFormState extends State<LoginScreen> {
           print("Response data: $associado");
 
           // Verificar que el objeto associado no es null
-          if (associado != null) {
-            // Navegar a la pantalla de Inicio
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                //builder: (context) => VeiculoScreen(associado: associado),
-                builder: (context) => VeiculoScreen(associado: associado ),
-                settings: RouteSettings(arguments: associado),
-              ),
-            );
-          } else {
-            print("Error: Associado is null");
-          }
+          // Navegar a la pantalla de Inicio
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              //builder: (context) => VeiculoScreen(associado: associado),
+              builder: (context) => VeiculoScreen(associado: associado),
+              settings: RouteSettings(arguments: associado),
+            ),
+          );
         } else {
           print("Error: ${response.error?.exception}");
           // Mostrar mensaje de error al usuario
@@ -101,7 +100,6 @@ class _LoginFormState extends State<LoginScreen> {
                 color: Colors.white,
                 labelcolor: Colors.white,
                 onChanged: (text) {
-                  print("emal $text");
                   _cpf = text;
                 },
                 /* validator: (text){
@@ -113,7 +111,7 @@ class _LoginFormState extends State<LoginScreen> {
               ),
               SizedBox(height: responsive.dp(2)),
               Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
                       color: Colors.black12,
@@ -132,11 +130,10 @@ class _LoginFormState extends State<LoginScreen> {
                         borderenabled: false,
                         fontsize: responsive.dp(1.4),
                         onChanged: (text) {
-                          print("password: $text");
                           _senha = text;
                         },
                         validator: (text) {
-                          if (text!.trim().length == 0) {
+                          if (text!.trim().isEmpty) {
                             return "senha invalida";
                           }
                           return null;
@@ -149,7 +146,7 @@ class _LoginFormState extends State<LoginScreen> {
                       },
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.black38,
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                             vertical: 10), // Color del texto
                       ),
                       child: Text(
