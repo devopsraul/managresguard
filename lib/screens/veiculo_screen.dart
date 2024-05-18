@@ -21,11 +21,12 @@ class VeiculoScreen extends StatefulWidget {
 class _VeiculoScreenState extends State<VeiculoScreen> {
   final http = Http(baseUrl: 'https://api-integracao.ileva.com.br');
   late final VeiculoRepository auth = VeiculoRepositoryImpl(VeiculoAPI(http));
-  late Future<Veiculo> futureVeiculo; // Modificado para un solo Veiculo
+  //late Future<Veiculo> futureVeiculo; // Modificado para un solo Veiculo
   late Size size;
   double page = 0.0;
   double verPos = 0.0;
   Duration defaultDuration = const Duration(milliseconds: 300);
+  VeiculoModel? veiculos; // Cambiado a un solo objeto Veiculo
 
   final PageController _pg = PageController(
     viewportFraction: .8,
@@ -76,24 +77,24 @@ class _VeiculoScreenState extends State<VeiculoScreen> {
   Future<void> fetchVeiculo() async {
     try {
       http.token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGllbnRlX25pY2tuYW1lIjoicmVzZ3VhcmQiLCJpZCI6MiwiaGFzaCI6IjE2YzllNGI2Yjk0ZSJ9.ith7n7CDfwgaKt9k0J-D7SXf0v1u9taSrZ3m0HWS0F0';
-
-      final HttpResult<VeiculoResponse> response = await auth.buscar("15");
+      final HttpResult<VeiculoResponse> response = await auth.buscar("15");//widget.associado.veiculos[0].codSituacao as String);
       if (response.error == null) {
-        final associado = response.data!.veiculo;
-        print("Response data: $associado");
+        setState(() {
+          //final associado = response.data!.veiculo;
+          veiculos = response.data!.veiculo;
+        });
       } else {
         print("Error: ${response.error?.exception}");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: ${response.error?.exception}')),
         );
       }
-      setState(() {});
     } catch (error) {
       print("Error: $error");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $error')),
       );
-    } finally {}
+    }
   }
 
   @override
