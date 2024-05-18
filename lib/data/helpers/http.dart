@@ -1,3 +1,4 @@
+// authentication_api.dart
 import 'package:managresguard/data/helpers/http_result.dart';
 import 'http_method.dart';
 import 'parse_response_body.dart';
@@ -36,9 +37,9 @@ class Http {
       }
 
       if (queryParameters.isNotEmpty) {
-        url = url.replace( queryParameters: {
-          ...url.queryParameters, 
-          ...queryParameters
+        url = url.replace(queryParameters: {
+          ...url.queryParameters,
+          ...queryParameters,
         });
       }
 
@@ -48,49 +49,50 @@ class Http {
         if (_token != null) 'access_token': '$_token',
       };
 
+      // Imprime los encabezados para depuración
+      print("Combined Headers before sendRequest: $combinedHeaders");
 
       final response = await sendRequest(
         url: url,
         method: method,
-        headers: combinedHeaders,
+        headers: combinedHeaders, // Usa combinedHeaders aquí
         body: body,
         timeOut: timeOut,
       );
 
-      //print("Response headers: ${response.headers}");
-
+      // Ajuste para utilizar parseResponseBody
       data = parseResponseBody(response.body);
       statusCode = response.statusCode;
       if (statusCode >= 400) {
         throw HttpError(
-          exception: null, 
-          stackTrace: StackTrace.current, 
-          data: data
-        );
+          exception: null, stackTrace: StackTrace.current, data: data);
       }
 
+      // Asegúrate de que el parser se aplique correctamente
+      final resultData = parser != null ? parser(data) : data;
+
       return HttpResult<T>(
-        data: parser != null ? parser(data) : data,
+        data: resultData,
         statusCode: statusCode,
         error: null,
       );
     } catch (e, s) {
       if (e is HttpError) {
         return HttpResult<T>(
-          data: null, 
-          statusCode: statusCode!, 
-          error: e
+          data: null,
+          statusCode: statusCode!,
+          error: e,
         );
       }
 
       return HttpResult<T>(
-        data: null, 
+        data: null,
         error: HttpError(
           data: data,
           exception: e,
-          stackTrace: s
+          stackTrace: s,
         ),
-        statusCode: statusCode ?? -1, 
+        statusCode: statusCode ?? -1,
       );
     }
   }

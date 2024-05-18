@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:managresguard/domain/models/bank_card_model.dart';
-import 'package:managresguard/constants.dart';
+import '../../constants.dart';
+import '../../domain/models/veiculo_model.dart';
 
-class BankCard extends StatelessWidget {
-  const BankCard({
+class VeiculoCard extends StatelessWidget {
+  const VeiculoCard({
     Key? key,
-    required this.bankCard,
+    required this.veiculoCard,
   }) : super(key: key);
 
-  final VeiculoModel bankCard;
+  final VeiculoModel veiculoCard;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class BankCard extends StatelessWidget {
       padding: const EdgeInsets.all(Constants.padding * 2),
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage(bankCard.card),
+          image: AssetImage(veiculoCard.card),
           fit: BoxFit.cover,
         ),
         borderRadius: BorderRadius.circular(
@@ -35,13 +35,13 @@ class BankCard extends StatelessWidget {
             children: [
               ClipOval(
                 child: Image.asset(
-                  bankCard.imgcarro,
+                  veiculoCard.imgcarro,
                   height: Constants.padding * 5.1,
                   width: Constants.padding * 5.1,
                 ),
               ),
               Text(
-                bankCard.placa,
+                veiculoCard.placa,
                 style: Theme.of(context)
                     .textTheme
                     .headlineMedium!
@@ -51,7 +51,7 @@ class BankCard extends StatelessWidget {
           ),
           Text(
             //"\$${bankCard.active.toStringAsFixed(2)}",
-            bankCard.situacao,
+            veiculoCard.situacao,
             style: Theme.of(context)
                 .textTheme
                 .headlineMedium!

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:managresguard/data/helpers/http.dart';
-import 'package:managresguard/domain/repositories/authentication_repository.dart';
+import 'package:managresguard/domain/repositories/repository.dart';
 import 'package:managresguard/screens/veiculo_screen.dart';
-import 'data/data_source/remote/authentication_api.dart';
-import 'data/repositories_empl/authentication_repository_impl.dart';
+import 'data/data_source/remote/associado_api.dart';
+import 'data/repositories_empl/associado_repository_impl.dart';
 import 'screens/home_screen.dart'; // Asegúrate de ajustar la ruta si es necesario
 
 void main() {
@@ -50,8 +50,8 @@ class _TmpPageState extends State<TmpPage> {
 
     final http = Http(baseUrl: 'https://reqres.in');
 
-    final AuthenticacionRepository auth = AuthenticacionRepositoryImpl(
-      AutheticationAPI(http)
+    final AssociadoRepository auth = AssociadoRepositoryImpl(
+      AssociadoAPI(http)
     );
 
     auth.login(

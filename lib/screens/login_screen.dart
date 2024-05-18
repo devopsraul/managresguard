@@ -1,11 +1,16 @@
+//login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:managresguard/screens/components/input_text.dart';
 import 'package:managresguard/utils/dialogs.dart';
 import 'package:managresguard/utils/responsive.dart';
-import '../data/data_source/remote/authentication_api.dart';
+import '../data/data_source/remote/associado_api.dart';
 import '../data/helpers/http.dart';
-import '../data/repositories_empl/authentication_repository_impl.dart';
-import '../domain/repositories/authentication_repository.dart';
+import '../data/helpers/http_result.dart';
+import '../data/repositories_empl/associado_repository_impl.dart';
+import '../domain/models/asociado_model.dart';
+import '../domain/repositories/repository.dart';
+import 'inicio_screen.dart';
+import 'veiculo_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -14,73 +19,88 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginFormState extends State<LoginScreen> {
   GlobalKey<FormState> _formKey = GlobalKey();
-  String _cpf ='', _senha = '';
+  String _cpf = '', _senha = '';
   final http = Http(baseUrl: 'https://api-integracao.ileva.com.br');
-  late final AuthenticacionRepository auth = AuthenticacionRepositoryImpl(AutheticationAPI(http));
+  late final AssociadoRepository auth = AssociadoRepositoryImpl(AssociadoAPI(http));
 
-  Future<void> _submit() async{
+  Future<void> _submit() async {
     final isOk = _formKey.currentState?.validate();
     print("form is ok $isOk");
-    if (isOk!) {  
-      //ProgressDialog.show(context);
+    if (isOk!) {
       try {
         // Configurar el token manualmente para pruebas
-        http.token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGllbnRlX25pY2tuYW1lIjoicmVzZ3VhcmQiLCJpZCI6MiwiaGFzaCI6IjE2YzllNGI2Yjk0ZSJ9.ith7n7CDfwgaKt9k0J-D7SXf0v1u9taSrZ3m0HWS0F0';
-        //print("Token configurado: ${http._token}");
+        http.token =
+            'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGllbnRlX25pY2tuYW1lIjoicmVzZ3VhcmQiLCJpZCI6MiwiaGFzaCI6IjE2YzllNGI2Yjk0ZSJ9.ith7n7CDfwgaKt9k0J-D7SXf0v1u9taSrZ3m0HWS0F0';
 
         // Muestra un indicador de progreso si es necesario
-        // ProgressDialog.show(context);
-        
-        final response = await auth.login(
-          _cpf, 
-          _senha, // "cityslicka"
-        );
-        
+        //ProgressDialog.show(context);
+
+        final HttpResult<ApiResponse> response = await auth.login(_cpf, _senha);
+
         // Maneja la respuesta y actualiza el estado si es necesario
-        print(response);
+        if (response.error == null) {
+          final associado = response.data!.associado;
+          print("Response data: $associado");
+
+          // Verificar que el objeto associado no es null
+          if (associado != null) {
+            // Navegar a la pantalla de Inicio
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                //builder: (context) => VeiculoScreen(associado: associado),
+                builder: (context) => VeiculoScreen(associado: associado ),
+                settings: RouteSettings(arguments: associado),
+              ),
+            );
+          } else {
+            print("Error: Associado is null");
+          }
+        } else {
+          print("Error: ${response.error?.exception}");
+          // Mostrar mensaje de error al usuario
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: ${response.error?.exception}')),
+          );
+        }
+
         // Si necesitas actualizar el estado de la UI, usa setState
         setState(() {
-          ///_result = response;
-          print(response);
+          // _result = response;
         });
-        
       } catch (error) {
         // Maneja errores y muestra un mensaje al usuario si es necesario
         print("Error: $error");
-        // Muestra un mensaje de error al usuario
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(content: Text('Error: $error')),
-        // );
+        // Mostrar mensaje de error al usuario
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $error')),
+        );
       } finally {
         // Oculta el indicador de progreso si es necesario
-        // ProgressDialog.dismiss(context);
+        //ProgressDialog.dismiss(context);
       }
     }
-    //ProgressDialog.dismiss(context);
   }
 
   @override
   Widget build(BuildContext context) {
     final Responsive responsive = Responsive.of(context);
 
-
     return Positioned(
       bottom: -20,
       child: Container(
-        constraints: BoxConstraints(
-          maxWidth: responsive.istablet ? 430 : 280
-        ),
+        constraints: BoxConstraints(maxWidth: responsive.istablet ? 430 : 280),
         child: Form(
           key: _formKey,
           child: Column(
             children: <Widget>[
               InputText(
-                keyboardtype: TextInputType.number,            
+                keyboardtype: TextInputType.number,
                 fontsize: responsive.dp(responsive.istablet ? 1.2 : 1.4),
                 label: "CPF",
                 color: Colors.white,
                 labelcolor: Colors.white,
-                onChanged: (text){
+                onChanged: (text) {
                   print("emal $text");
                   _cpf = text;
                 },
@@ -90,7 +110,7 @@ class _LoginFormState extends State<LoginScreen> {
                   }
                   return 'null';
                 },*/
-              ),       
+              ),
               SizedBox(height: responsive.dp(2)),
               Container(
                 decoration: BoxDecoration(
@@ -150,7 +170,9 @@ class _LoginFormState extends State<LoginScreen> {
                 child: ElevatedButton(
                   onPressed: _submit,
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(const Color.fromRGBO(255, 219, 0, 1)), // Cambia el color del botón a azul
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        const Color.fromRGBO(255, 219, 0,
+                            1)), // Cambia el color del botón a azul
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       const RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(

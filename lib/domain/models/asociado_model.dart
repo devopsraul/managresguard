@@ -1,12 +1,12 @@
 // associado_model.dart
 class ApiResponse {
-  final Associado associado;
+  final AssociadoModel associado;
 
   ApiResponse({required this.associado});
 
   factory ApiResponse.fromJson(Map<String, dynamic> json) {
     return ApiResponse(
-      associado: Associado.fromJson(json['associado']),
+      associado: AssociadoModel.fromJson(json['associado']),
     );
   }
 
@@ -17,7 +17,7 @@ class ApiResponse {
   }
 }
 
-class Associado {
+class AssociadoModel {
   final String nome;
   final String cpf;
   final String? telWhatsapp;
@@ -45,7 +45,7 @@ class Associado {
   final int codSituacao;
   final List<Veiculo> veiculos;
 
-  Associado({
+  AssociadoModel({
     required this.nome,
     required this.cpf,
     required this.telWhatsapp,
@@ -74,11 +74,11 @@ class Associado {
     required this.veiculos,
   });
 
-  factory Associado.fromJson(Map<String, dynamic> json) {
+  factory AssociadoModel.fromJson(Map<String, dynamic> json) {
     var list = json['veiculos'] as List;
     List<Veiculo> veiculosList = list.map((i) => Veiculo.fromJson(i)).toList();
 
-    return Associado(
+    return AssociadoModel(
       nome: json['nome'],
       cpf: json['cpf'],
       telWhatsapp: json['tel_whatsapp'],

@@ -1,15 +1,13 @@
+//profile_section.dart
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:managresguard/constants.dart';
+import '../../domain/models/asociado_model.dart';
 
 class ProfileSection extends StatelessWidget {
-  ProfileSection({
-    super.key,
-    required this.verticalPos,
-  });
-
   final double verticalPos;
+  final AssociadoModel associado;
   // Lista de categorías y cantidad de lugares
   final List<Map<String, dynamic>> categories = [
     {'title': 'Assistência 24h', 'places': '-', 'icon': Icons.assist_walker},
@@ -20,15 +18,21 @@ class ProfileSection extends StatelessWidget {
     {'title': 'Whatsapp', 'places': '-', 'icon': Icons.whatshot},
   ];
 
+  ProfileSection({
+    super.key, 
+    required this.verticalPos, 
+    required this.associado
+  });
+
   @override
   Widget build(BuildContext context) {
+    
     return Column(
       children: [
         Expanded(
           child: Container(
             margin: const EdgeInsets.only(top: Constants.padding),
-            padding:
-                const EdgeInsets.symmetric(horizontal: Constants.padding * 2.5),
+            padding: const EdgeInsets.symmetric(horizontal: Constants.padding * 2.5),
             decoration: BoxDecoration(
               color: const Color.fromRGBO(255, 219, 0, 0.6),
               borderRadius: BorderRadius.circular(Constants.radius),
@@ -64,7 +68,7 @@ class ProfileSection extends StatelessWidget {
                             ),
                           ),
                         )
-                      : null,
+                      : const SizedBox.shrink(),
                 )
               ],
             ),
@@ -143,14 +147,31 @@ class ProfileSection extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        RichText(
-          text: TextSpan(
-            text: "Oi,",
-            style: Theme.of(context).textTheme.headlineSmall,
-            children: const [
-              TextSpan(
-                text: " Bruno",
-                style: TextStyle(fontWeight: FontWeight.bold),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: Constants.padding * 2,
+              ),
+              Text(
+                "Oi,",
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  // Aquí puedes ajustar el tamaño del texto basado en el tamaño del contenedor
+                  double fontSize = constraints.maxWidth > 200 ? 24 : 16;
+                  return Text(
+                    associado.nome,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: fontSize,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  );
+                },
               ),
             ],
           ),
@@ -205,9 +226,9 @@ class ProfileSection extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(40),
-                  bottomRight: Radius.circular(40)
+                  bottomRight: Radius.circular(40),
                 ),
-              ), // Ajusta la altura según necesites
+              ),
               child: SizedBox.expand(
                 child: Column(
                   children: <Widget>[
@@ -215,11 +236,13 @@ class ProfileSection extends StatelessWidget {
                       padding: const EdgeInsets.all(20),
                       child: Column(
                         children: [
-                          const TextField(
-                            decoration: InputDecoration(labelText: 'Nombre'),
+                          TextField(
+                            decoration: const InputDecoration(labelText: 'Telefone'),
+                            controller: TextEditingController(text: associado.telWhatsapp),
                           ),
-                          const TextField(
-                            decoration: InputDecoration(labelText: 'Apellido'),
+                          TextField(
+                            decoration: const InputDecoration(labelText: 'Email'),
+                            controller: TextEditingController(text: associado.email),
                           ),
                           const SizedBox(height: 20),
                           ElevatedButton(
@@ -227,20 +250,22 @@ class ProfileSection extends StatelessWidget {
                               Navigator.pop(context); // Cierra el dialog
                             },
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(const Color.fromRGBO(255, 219, 0, 1)), // Cambia el color del botón a azul
-                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                const Color.fromRGBO(255, 219, 0, 1),
+                              ),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
                                 const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(10),
-                                    bottomRight: Radius.circular(10)
-                                  ), // Da un borde redondeado al botón
+                                    bottomRight: Radius.circular(10),
+                                  ),
                                 ),
                               ),
                             ),
                             child: const Text(
-                              'Guardar Cambios',
-                              style: TextStyle(
-                                  color: Colors.white), // Cambia el color de la letra a blanco
+                              'Confirmar',
+                              style: TextStyle(color: Colors.white),
                             ),
                           ),
                         ],

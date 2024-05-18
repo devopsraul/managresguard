@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:managresguard/domain/models/bank_card_model.dart';
-import 'package:managresguard/screens/components/bank_card.dart';
-import 'package:managresguard/screens/profile_section.dart';
+import 'package:managresguard/domain/models/veiculo_model.dart';
+import '../domain/models/asociado_model.dart';
+import 'components/bank_card.dart';
+import 'components/profile_section.dart';
+//import 'package:managresguard/domain/models/asociado_model.dart';
+//import 'package:managresguard/domain/models/bank_card_model.dart';
+//import 'package:managresguard/screens/components/bank_card.dart';
+//import 'package:managresguard/screens/profile_section.dart';
 
 class VeiculoScreen extends StatefulWidget {
-  const VeiculoScreen({super.key});
+  final AssociadoModel associado;
+  const VeiculoScreen({super.key, required this.associado});
 
   @override
   _VeiculoScreenState createState() => _VeiculoScreenState();
@@ -98,6 +104,7 @@ class _VeiculoScreenState extends State<VeiculoScreen> {
                 onVerticalDragEnd: onVerticalDradEnds,
                 child: ProfileSection(
                   verticalPos: verPos,
+                  associado: widget.associado,
                 ),
               ),
             ),
@@ -110,7 +117,7 @@ class _VeiculoScreenState extends State<VeiculoScreen> {
             right: -5,
             child: PageView(
               controller: _pg,
-              children: cards.map((e) => BankCard(bankCard: e)).toList(),
+              children: veiculo.map((e) => VeiculoCard(veiculoCard: e)).toList(),
             ),
           ),
           // Card Detais veiculo Section
@@ -120,9 +127,9 @@ class _VeiculoScreenState extends State<VeiculoScreen> {
             right: size.width * .1,
             bottom: 0, // Establece un bottom para permitir expansión hacia abajo
             child: ListView.builder(
-              itemCount: cards[page.round()].beneficios.length,
+              itemCount: veiculo[page.round()].beneficios.length,
               itemBuilder: (context, index) {
-                final expense = cards[page.round()].beneficios[index];
+                final expense = veiculo[page.round()].beneficios[index];
                 return Container(
                   margin: const EdgeInsets.symmetric(
                     vertical: 1,
@@ -145,7 +152,7 @@ class _VeiculoScreenState extends State<VeiculoScreen> {
                           width: 10), // Espacio entre el icono y el texto
                       Expanded(
                         child: Text(
-                          expense.title,
+                          expense.beneficio,
                           style: const TextStyle(
                             fontSize: 15, // Tamaño de fuente ajustado
                             fontWeight: FontWeight.bold, // Negrita
