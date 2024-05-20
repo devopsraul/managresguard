@@ -2,8 +2,7 @@ import 'dart:convert';
 
 dynamic parseResponseBody(String responseBody) {
   try {
-    final jsonData = jsonDecode(responseBody);
-    return jsonData;
+    return jsonDecode(responseBody);
   } catch (e) {
     throw Exception('Error parsing response body: $e');
   }

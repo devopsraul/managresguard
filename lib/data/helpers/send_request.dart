@@ -1,3 +1,4 @@
+//send_request.dart
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'http_method.dart';
@@ -18,10 +19,11 @@ Future<Response> sendRequest({
   required Duration timeOut,
 }) {
   var finalHeaders = {...headers};
-  if (method == HttpMethod.get) {
-    final ContentType = headers['Content-Type'];
+  
+  if (method != HttpMethod.get) {
+    final contentType = headers['Content-Type'];
 
-    if (ContentType == null || ContentType.contains("application/json")) {
+    if (contentType == null || contentType.contains("application/json")) {
       finalHeaders['Content-Type'] = "application/json; charset=UTF-8";
       body = _parseBody(body);
     }
@@ -29,44 +31,36 @@ Future<Response> sendRequest({
 
   final client = Client();
 
-  //Imprime los encabezados para depuración
-  //print("Final Headers in sendRequest: $finalHeaders");
-
   switch (method) {
     case HttpMethod.get:
       return client.get(
-              url,
-              headers: finalHeaders,
-            )
-            .timeout(timeOut);
+        url,
+        headers: finalHeaders,
+      ).timeout(timeOut);
     case HttpMethod.post:
       return client.post(
-            url,
-            headers: finalHeaders,
-            body: body,
-          )
-          .timeout(timeOut);
+        url,
+        headers: finalHeaders,
+        body: body,
+      ).timeout(timeOut);
     case HttpMethod.put:
       return client.put(
-            url,
-            headers: finalHeaders,
-            body: body,
-          )
-          .timeout(timeOut);
+        url,
+        headers: finalHeaders,
+        body: body,
+      ).timeout(timeOut);
     case HttpMethod.patch:
       return client.patch(
-            url,
-            headers: finalHeaders,
-            body: body,
-          )
-          .timeout(timeOut);
+        url,
+        headers: finalHeaders,
+        body: body,
+      ).timeout(timeOut);
     case HttpMethod.delete:
       return client.delete(
-            url,
-            headers: finalHeaders,
-            body: body,
-          )
-          .timeout(timeOut);
+        url,
+        headers: finalHeaders,
+        body: body,
+      ).timeout(timeOut);
     default:
       throw UnsupportedError('Unsupported HTTP method');
   }

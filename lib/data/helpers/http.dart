@@ -1,4 +1,4 @@
-// authentication_api.dart
+// http.dart
 import 'package:managresguard/data/helpers/http_result.dart';
 import 'http_method.dart';
 import 'parse_response_body.dart';
@@ -9,11 +9,9 @@ typedef Parser<T> = T Function(dynamic data);
 class Http {
   final String baseUrl;
   String? _token;
-  //Http({this.baseUrl = '', String? token});
-  Http({this.baseUrl = '', String? token}) : _token = token;
+  Http({required this.baseUrl, String? token}) : _token = token;
   
   set token(String? token) {
-    //_token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGllbnRlX25pY2tuYW1lIjoicmVzZ3VhcmQiLCJpZCI6MiwiaGFzaCI6IjE2YzllNGI2Yjk0ZSJ9.ith7n7CDfwgaKt9k0J-D7SXf0v1u9taSrZ3m0HWS0F0';
     _token = token;
   }
 
@@ -24,7 +22,7 @@ class Http {
     Map<String, String> queryParameters = const {},
     dynamic body,
     Parser<T>? parser,
-    Duration timeOut = const Duration(seconds: 10),
+    Duration timeOut = const Duration(seconds: 30),
   }) async {
     int? statusCode;
     dynamic data;
@@ -49,9 +47,6 @@ class Http {
         if (_token != null) 'access_token': '$_token',
       };
 
-      // Imprime los encabezados para depuración
-      print("Combined Headers before sendRequest: $combinedHeaders");
-
       final response = await sendRequest(
         url: url,
         method: method,
@@ -65,7 +60,16 @@ class Http {
       statusCode = response.statusCode;
       if (statusCode >= 400) {
         throw HttpError(
-          exception: null, stackTrace: StackTrace.current, data: data);
+          exception: null, 
+          stackTrace: StackTrace.current, 
+          data: data);
+      }
+
+      if (statusCode == 200 && data == null) {
+        throw HttpError(
+          exception: null, 
+          stackTrace: StackTrace.current, 
+          data: data);
       }
 
       // Asegúrate de que el parser se aplique correctamente

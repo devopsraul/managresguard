@@ -41,9 +41,9 @@ class VeiculoModel {
   final String estadoUf;
   final int codigoAssociado;
   final String placa;
-  final String? idExterno;
+  final int? idExterno;
   final int codVeiculo;
-  final int cilindrada;
+  final int? cilindrada;
   final String chassi;
   final String renavam;
   final int anoFabricacao;
@@ -124,8 +124,8 @@ class VeiculoModel {
     List<BeneficiosModel> beneficiosList = list.map((i) => BeneficiosModel.fromJson(i)).toList();
 
     return VeiculoModel(
-      //card: json['card'],
-      imgcarro: json['image'] ?? 'assets/image/card.png',
+      card: json['card'] ?? 'assets/image/card.png',
+      imgcarro: json['image'] ?? 'assets/image/patriot-chevrolet.png',
       associado: json['associado'],
       sexo: json['sexo'],
       telFixo: json['tel_fixo'],
@@ -256,7 +256,7 @@ class BeneficiosModel {
     };
   }
 }
-
+/*
 final veiculo = [
   VeiculoModel(
     card: 'assets/image/card.png',
@@ -369,3 +369,4 @@ final veiculo = [
     ],
   )
 ];
+*/

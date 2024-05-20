@@ -23,62 +23,64 @@ class _LoginFormState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   String _cpf = '', _senha = '';
   final http = Http(baseUrl: 'https://api-integracao.ileva.com.br');
-  late final AssociadoRepository auth =
-      AssociadoRepositoryImpl(AssociadoAPI(http));
+  late final AssociadoRepository auth = AssociadoRepositoryImpl(AssociadoAPI(http));
+  bool _isLoading = false;
 
   Future<void> _submit() async {
-    final isOk = _formKey.currentState?.validate();
+    if (_formKey.currentState?.validate() ?? false) {
+      setState(() {
+        _isLoading = true;
+      });
+      {
+        try {
+          // Configurar el token manualmente para pruebas
+          http.token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGllbnRlX25pY2tuYW1lIjoicmVzZ3VhcmQiLCJpZCI6MiwiaGFzaCI6IjE2YzllNGI2Yjk0ZSJ9.ith7n7CDfwgaKt9k0J-D7SXf0v1u9taSrZ3m0HWS0F0';
 
-    if (isOk!) {
-      try {
-        // Configurar el token manualmente para pruebas
-        http.token =
-            'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGllbnRlX25pY2tuYW1lIjoicmVzZ3VhcmQiLCJpZCI6MiwiaGFzaCI6IjE2YzllNGI2Yjk0ZSJ9.ith7n7CDfwgaKt9k0J-D7SXf0v1u9taSrZ3m0HWS0F0';
+          // Muestra un indicador de progreso si es necesario
+          //ProgressDialog.show(context);
 
-        // Muestra un indicador de progreso si es necesario
-        //ProgressDialog.show(context);
+          final HttpResult<ApiResponse> response = await auth.login(_cpf, _senha);
 
-        final HttpResult<ApiResponse> response = await auth.login(_cpf, _senha);
+          // Maneja la respuesta y actualiza el estado si es necesario
+          if (response.error == null && response.data != null) {
+            final associado = response.data!.associado;
 
-        // Maneja la respuesta y actualiza el estado si es necesario
-        if (response.error == null) {
-          final associado = response.data!.associado;
-          print("Response data: $associado");
-
-          // Verificar que el objeto associado no es null
-          // Navegar a la pantalla de Inicio
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              //builder: (context) => VeiculoScreen(associado: associado),
-              builder: (context) => VeiculoScreen(associado: associado),
-              settings: RouteSettings(arguments: associado),
-            ),
-          );
-        } else {
-          print("Error: ${response.error?.exception}");
-          // Mostrar mensaje de error al usuario
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: ${response.error?.exception}')),
-          );
+            // Verificar que el objeto associado no es null
+            if (associado.nome.isNotEmpty) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VeiculoScreen(associado: associado),
+                  settings: RouteSettings(arguments: associado),
+                ),
+              );
+            } else {
+              _showErrorSnackBar("CPF ou senha estão incorretos");
+            }
+          } else {
+            _showErrorSnackBar("CPF ou senha estão incorretos");
+          }
+        } catch (e) {
+          print('$e');
+          _showErrorSnackBar("CPF/CPNJ ou senha estão incorretos");
+        } finally {
+          setState(() {
+            _isLoading = false;
+          });
         }
-
-        // Si necesitas actualizar el estado de la UI, usa setState
-        setState(() {
-          // _result = response;
-        });
-      } catch (error) {
-        // Maneja errores y muestra un mensaje al usuario si es necesario
-        print("Error: $error");
-        // Mostrar mensaje de error al usuario
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $error')),
-        );
-      } finally {
-        // Oculta el indicador de progreso si es necesario
-        //ProgressDialog.dismiss(context);
       }
     }
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+    _formKey.currentState?.reset();
+    setState(() {
+      _cpf = '';
+      _senha = '';
+    });
   }
 
   @override
@@ -161,15 +163,20 @@ class _LoginFormState extends State<LoginScreen> {
                   ],
                 ),
               ),
+              Text(
+                'Versão 1.10.0Beta',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: responsive.dp(1.2),
+                ),
+              ),
               SizedBox(height: responsive.dp(2)),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _submit,
+                  onPressed: _isLoading ? null : _submit,
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        const Color.fromRGBO(255, 219, 0,
-                            1)), // Cambia el color del botón a azul
+                    backgroundColor: MaterialStateProperty.all<Color>(const Color.fromRGBO(255, 219, 0, 1)), // Cambia el color del botón a azul
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       const RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
@@ -180,7 +187,7 @@ class _LoginFormState extends State<LoginScreen> {
                     ),
                   ),
                   child: Text(
-                    "Iniciar Sessão",
+                    _isLoading ? 'Iniciando...' : 'Iniciar Sessão',
                     style: TextStyle(
                       color: Colors.black87,
                       fontSize: responsive.dp(1.5),
@@ -189,9 +196,11 @@ class _LoginFormState extends State<LoginScreen> {
                 ),
               ),
               SizedBox(height: responsive.dp(10)),
+              
             ],
           ),
         ),
+        
       ),
     );
   }

@@ -6,7 +6,7 @@ class ApiResponse {
 
   factory ApiResponse.fromJson(Map<String, dynamic> json) {
     return ApiResponse(
-      associado: AssociadoModel.fromJson(json['associado']),
+      associado: AssociadoModel.fromJson(json['associado'] ?? {}),
     );
   }
 
@@ -19,64 +19,64 @@ class ApiResponse {
 
 class AssociadoModel {
   final String nome;
-  final String cpf;
+  final String? cpf;
   final String? telWhatsapp;
   final String? telCelular;
   final String? telComercial;
-  final String dtNascimento;
-  final String email;
-  final String rg;
-  final String orgaoExpedidorRg;
-  final String cnh;
-  final String categoriaCnh;
+  final String? dtNascimento;
+  final String? email;
+  final String? rg;
+  final String? orgaoExpedidorRg;
+  final String? cnh;
+  final String? categoriaCnh;
   final String? dtVencimentoCnh;
-  final String logradouro;
-  final String bairro;
-  final String numero;
-  final String complemento;
-  final String cep;
-  final int codAssociado;
-  final String cidade;
-  final String estado;
-  final String uf;
-  final String dtCadastro;
-  final String situacao;
+  final String? logradouro;
+  final String? bairro;
+  final String? numero;
+  final String? complemento;
+  final String? cep;
+  final int? codAssociado;
+  final String? cidade;
+  final String? estado;
+  final String? uf;
+  final String? dtCadastro;
+  final String? situacao;
   final String? situacaoTipo;
-  final int codSituacao;
+  final int? codSituacao;
   final List<Veiculo> veiculos;
 
   AssociadoModel({
     required this.nome,
-    required this.cpf,
-    required this.telWhatsapp,
-    required this.telCelular,
-    required this.telComercial,
-    required this.dtNascimento,
-    required this.email,
-    required this.rg,
-    required this.orgaoExpedidorRg,
-    required this.cnh,
-    required this.categoriaCnh,
-    required this.dtVencimentoCnh,
-    required this.logradouro,
-    required this.bairro,
-    required this.numero,
-    required this.complemento,
-    required this.cep,
-    required this.codAssociado,
-    required this.cidade,
-    required this.estado,
-    required this.uf,
-    required this.dtCadastro,
-    required this.situacao,
-    required this.situacaoTipo,
-    required this.codSituacao,
+    this.cpf,
+    this.telWhatsapp,
+    this.telCelular,
+    this.telComercial,
+    this.dtNascimento,
+    this.email,
+    this.rg,
+    this.orgaoExpedidorRg,
+    this.cnh,
+    this.categoriaCnh,
+    this.dtVencimentoCnh,
+    this.logradouro,
+    this.bairro,
+    this.numero,
+    this.complemento,
+    this.cep,
+    this.codAssociado,
+    this.cidade,
+    this.estado,
+    this.uf,
+    this.dtCadastro,
+    this.situacao,
+    this.situacaoTipo,
+    this.codSituacao,
     required this.veiculos,
   });
 
   factory AssociadoModel.fromJson(Map<String, dynamic> json) {
-    var list = json['veiculos'] as List;
-    List<Veiculo> veiculosList = list.map((i) => Veiculo.fromJson(i)).toList();
+    var list = json['veiculos'] as List? ?? [];
+    List<Veiculo> veiculosList = list.map((i) => Veiculo.fromJson(i ?? {})).toList();
 
     return AssociadoModel(
       nome: json['nome'],
@@ -135,26 +135,26 @@ class AssociadoModel {
       'situacao': situacao,
       'situacao_tipo': situacaoTipo,
       'cod_situacao': codSituacao,
-      'veiculos': veiculos.map((v) => v.toJson()).toList(),
+      'veiculos': veiculos?.map((v) => v.toJson()).toList(),
     };
   }
 }
 
 class Veiculo {
-  final String placa;
+  final String? placa;
   final String modelo;
-  final int codVeiculo;
-  final String situacao;
+  final int? codVeiculo;
+  final String? situacao;
   final String? situacaoTipo;
-  final int codSituacao;
+  final int? codSituacao;
 
   Veiculo({
-    required this.placa,
+    this.placa,
     required this.modelo,
-    required this.codVeiculo,
-    required this.situacao,
-    required this.situacaoTipo,
-    required this.codSituacao,
+    this.codVeiculo,
+    this.situacao,
+    this.situacaoTipo,
+    this.codSituacao,
   });
 
   factory Veiculo.fromJson(Map<String, dynamic> json) {

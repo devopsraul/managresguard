@@ -41,8 +41,7 @@ class ProfileSection extends StatelessWidget {
               children: [
                 Center(child: buildHeader(context)),
                 Opacity(
-                  opacity: lerpDouble(0.0, 1.0,
-                      verticalPos / MediaQuery.of(context).size.height)!,
+                  opacity: lerpDouble(0.0, 1.0, verticalPos / MediaQuery.of(context).size.height)!,
                   child: verticalPos > 250
                       ? Center(
                           child: SingleChildScrollView(
@@ -74,13 +73,14 @@ class ProfileSection extends StatelessWidget {
             ),
           ),
         ),
-        Container(
-          height: 5,
-          width: 50,
-          margin: const EdgeInsets.symmetric(vertical: Constants.padding),
-          decoration: BoxDecoration(
+        GestureDetector(
+          onTap: () {
+            // Añadir la funcionalidad de deslizamiento hacia abajo si es necesario
+          },
+          child: Icon(
+            Icons.keyboard_arrow_down,
             color: Colors.blueGrey.shade800,
-            borderRadius: BorderRadius.circular(Constants.radius),
+            size: 30,
           ),
         ),
       ],

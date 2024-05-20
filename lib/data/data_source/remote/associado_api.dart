@@ -13,65 +13,65 @@ class AssociadoAPI {
   AssociadoAPI(this._http);
 
   Future<HttpResult<ApiResponse>> login(String cpfcpnj, String password) async {
-    final result = await _http.request<ApiResponse>(
-      '/associado/buscar',
-      queryParameters: {
-        "cpf_cnpj": cpfcpnj
-      },
-      method: HttpMethod.get,
-      parser: (data) {
-        return ApiResponse.fromJson(data);
-      },
-    );
-
-    error = result.error?.exception;
-
-    print("result data ${result.data}");
-    print("result data runtimeType ${result.data.runtimeType}");
-    print("result error ${result.error?.exception}");
-    print("result error ${result.error?.stackTrace}");
-    print("result statusCode ${result.statusCode}");
-
-    if (result.error == null) {
-      return HttpResult<ApiResponse>(
-        data: result.data,
-        statusCode: result.statusCode,
-        error: null,
+    try {
+      final result = await _http.request<ApiResponse>(
+        '/associado/buscar',
+        queryParameters: {"cpf_cnpj": cpfcpnj, "password": password},
+        method: HttpMethod.get,
+        parser: (data) {
+          return ApiResponse.fromJson(data);
+        },
       );
-    }
-    if (result.statusCode == 400) {
+
+      if (result.error == null) {
+        //print("result data ${result.data}");
+        //print("result statusCode ${result.statusCode}");
+        return HttpResult<ApiResponse>(
+          data: result.data,
+          statusCode: result.statusCode,
+          error: null,
+        );
+      } else {
+        print("result error ${result.error?.exception}");
+        print("result error ${result.error?.stackTrace}");
+        print("result statusCode ${result.statusCode}");
+        return HttpResult<ApiResponse>(
+          data: null,
+          statusCode: result.statusCode,
+          error: result.error,
+        );
+      }
+    } on SocketException catch (e) {
       return HttpResult<ApiResponse>(
         data: null,
-        statusCode: result.statusCode,
+        statusCode: 500,
         error: HttpError(
-          data: result.data,
-          exception: Exception('Access Denied'),
-          stackTrace: StackTrace.current,
-        ),
-      );
-    }
-
-    if (error is SocketException || error is TimeoutException) {
-      return HttpResult<ApiResponse>(
-        data: null,
-        statusCode: result.statusCode,
-        error: HttpError(
-          data: result.data,
+          data: null,
           exception: Exception('Network Error'),
           stackTrace: StackTrace.current,
         ),
       );
+    } on TimeoutException catch (e) {
+      return HttpResult<ApiResponse>(
+        data: null,
+        statusCode: 500,
+        error: HttpError(
+          data: null,
+          exception: Exception('Timeout Error'),
+          stackTrace: StackTrace.current,
+        ),
+      );
+    } catch (e) {
+      return HttpResult<ApiResponse>(
+        data: null,
+        statusCode: 500,
+        error: HttpError(
+          data: null,
+          exception: Exception('Unknown Error'),
+          stackTrace: StackTrace.current,
+        ),
+      );
     }
-
-    return HttpResult<ApiResponse>(
-      data: null,
-      statusCode: result.statusCode,
-      error: HttpError(
-        data: result.data,
-        exception: Exception('Unknown Error'),
-        stackTrace: StackTrace.current,
-      ),
-    );
   }
 
   Future<LoginResponse> register(String email, String password) async {

@@ -54,6 +54,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     )),
                 LoginScreen(),
+                Positioned(
+                  bottom: 8,
+                  child: Text(
+                    'Created by CodeEssence 2024',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: responsive.dp(1),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

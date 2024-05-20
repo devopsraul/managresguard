@@ -1,6 +1,5 @@
 //veiculo_screen.dart
 import 'package:flutter/material.dart';
-import 'package:managresguard/data/helpers/http_result.dart';
 import 'components/veiculo_card.dart';
 import 'components/profile_section.dart';
 import '../data/data_source/remote/veiculo_api.dart';
@@ -20,13 +19,13 @@ class VeiculoScreen extends StatefulWidget {
 
 class _VeiculoScreenState extends State<VeiculoScreen> {
   final http = Http(baseUrl: 'https://api-integracao.ileva.com.br');
-  late final VeiculoRepository auth = VeiculoRepositoryImpl(VeiculoAPI(http));
+  late final VeiculoRepository authV = VeiculoRepositoryImpl(VeiculoAPI(http));
   //late Future<Veiculo> futureVeiculo; // Modificado para un solo Veiculo
   late Size size;
   double page = 0.0;
   double verPos = 0.0;
   Duration defaultDuration = const Duration(milliseconds: 300);
-  VeiculoModel? veiculos; // Cambiado a un solo objeto Veiculo
+  List<VeiculoModel> veiculos = []; // Cambiado a una lista de VeiculoModel
 
   final PageController _pg = PageController(
     viewportFraction: .8,
@@ -74,23 +73,30 @@ class _VeiculoScreenState extends State<VeiculoScreen> {
     });
   }
 
-  Future<void> fetchVeiculo() async {
+  Future<void> fetchVeiculos() async {
     try {
       http.token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGllbnRlX25pY2tuYW1lIjoicmVzZ3VhcmQiLCJpZCI6MiwiaGFzaCI6IjE2YzllNGI2Yjk0ZSJ9.ith7n7CDfwgaKt9k0J-D7SXf0v1u9taSrZ3m0HWS0F0';
-      final HttpResult<VeiculoResponse> response = await auth.buscar("15");//widget.associado.veiculos[0].codSituacao as String);
-      if (response.error == null) {
-        setState(() {
-          //final associado = response.data!.veiculo;
-          veiculos = response.data!.veiculo;
-        });
-      } else {
-        print("Error: ${response.error?.exception}");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${response.error?.exception}')),
-        );
+      
+      List<VeiculoModel> tempVeiculos = [];
+      
+      for (var veiculo in widget.associado.veiculos) {
+        final response = await authV.buscar(veiculo.codVeiculo.toString());
+        if (response.error == null) {
+          tempVeiculos.add(response.data!.veiculo);
+        } else {
+          //print("Error: ${response.error?.exception}");
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: ${response.error?.exception}')),
+          );
+        }
       }
+      
+      setState(() {
+        veiculos = tempVeiculos;
+      });
+
     } catch (error) {
-      print("Error: $error");
+      //print("Error: $error");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $error')),
       );
@@ -101,7 +107,7 @@ class _VeiculoScreenState extends State<VeiculoScreen> {
   void initState() {
     super.initState();
     _pg.addListener(pageListener);
-    fetchVeiculo();
+    fetchVeiculos();
   }
 
   @override
@@ -114,88 +120,84 @@ class _VeiculoScreenState extends State<VeiculoScreen> {
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Stack(
-        children: [
-          // Profile Section
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-            top: MediaQuery.of(context).padding.top - verPos,
-            left: (size.width * .1 - verPos).clamp(0, double.infinity),
-            right: (size.width * .1 - verPos).clamp(0, double.infinity),
-            bottom: size.height * .75 - verPos,
-            child: AnimatedSwitcher(
-              switchInCurve: Curves.easeOut,
-              switchOutCurve: Curves.easeIn,
-              duration: const Duration(milliseconds: 150),
-              child: GestureDetector(
-                onVerticalDragUpdate: onVerticalDrad,
-                onVerticalDragEnd: onVerticalDradEnds,
-                child: ProfileSection(
-                  verticalPos: verPos,
-                  associado: widget.associado,
-                ),
-              ),
-            ),
-          ),
-          // Card veiculo Section
-          Positioned(
-            top: (size.height * 0.25) + verPos,
-            bottom: size.height * 0.55 - verPos,
-            left: -5,
-            right: -5,
-            child: PageView(
-              controller: _pg,
-              children:
-                  veiculo.map((e) => VeiculoCard(veiculoCard: e)).toList(),
-            ),
-          ),
-          // Card Detais veiculo Section
-          Positioned(
-            top: size.height * .475 + verPos,
-            left: size.width * .09,
-            right: size.width * .1,
-            bottom:
-                0, // Establece un bottom para permitir expansión hacia abajo
-            child: ListView.builder(
-              itemCount: veiculo[page.round()].beneficios.length,
-              itemBuilder: (context, index) {
-                final expense = veiculo[page.round()].beneficios[index];
-                return Container(
-                  margin: const EdgeInsets.symmetric(
-                      vertical: 1, horizontal: 11), // Margen para cada elemento
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 10, horizontal: 12), // Padding interno
-                  decoration: BoxDecoration(
-                    color: Colors.white, // Fondo de cada elemento
-                    borderRadius:
-                        BorderRadius.circular(10), // Bordes redondeados
-                    border:
-                        Border.all(color: Colors.grey[300]!), // Borde ligero
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.check_circle,
-                          color: Colors.green, size: 24), // Icono
-                      const SizedBox(
-                          width: 10), // Espacio entre el icono y el texto
-                      Expanded(
-                        child: Text(
-                          expense.beneficio,
-                          style: const TextStyle(
-                            fontSize: 15, // Tamaño de fuente ajustado
-                            fontWeight: FontWeight.bold, // Negrita
-                          ),
-                        ),
+      body: veiculos.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : Stack(
+              children: [
+                // Profile Section
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOut,
+                  top: MediaQuery.of(context).padding.top - verPos,
+                  left: (size.width * .1 - verPos).clamp(0, double.infinity),
+                  right: (size.width * .1 - verPos).clamp(0, double.infinity),
+                  bottom: size.height * .75 - verPos,
+                  child: AnimatedSwitcher(
+                    switchInCurve: Curves.easeOut,
+                    switchOutCurve: Curves.easeIn,
+                    duration: const Duration(milliseconds: 150),
+                    child: GestureDetector(
+                      onVerticalDragUpdate: onVerticalDrad,
+                      onVerticalDragEnd: onVerticalDradEnds,
+                      child: ProfileSection(
+                        verticalPos: verPos,
+                        associado: widget.associado,
                       ),
-                    ],
+                    ),
                   ),
-                );
-              },
+                ),
+                // Card veiculo Section
+                Positioned(
+                  top: (size.height * 0.25) + verPos,
+                  bottom: size.height * 0.55 - verPos,
+                  left: -5,
+                  right: -5,
+                  child: PageView(
+                    controller: _pg,
+                    children: veiculos.map((e) => VeiculoCard(veiculoCard: e)).toList(),
+                  ),
+                ),
+                // Card Detais veiculo Section
+                Positioned(
+                  top: size.height * .475 + verPos,
+                  left: size.width * .09,
+                  right: size.width * .1,
+                  bottom: 0, // Establece un bottom para permitir expansión hacia abajo
+                  child: veiculos.isNotEmpty
+                      ? ListView.builder(
+                          itemCount: veiculos[page.round()].beneficios.length,
+                          itemBuilder: (context, index) {
+                            final beneficio = veiculos[page.round()].beneficios[index];
+                            return Container(
+                              margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 11), // Margen para cada elemento
+                              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12), // Padding interno
+                              decoration: BoxDecoration(
+                                color: Colors.white, // Fondo de cada elemento
+                                borderRadius: BorderRadius.circular(10), // Bordes redondeados
+                                border: Border.all(color: Colors.grey[300]!), // Borde ligero
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.check_circle, color: Colors.green, size: 24), // Icono
+                                  const SizedBox(width: 10), // Espacio entre el icono y el texto
+                                  Expanded(
+                                    child: Text(
+                                      beneficio.beneficio,
+                                      style: const TextStyle(
+                                        fontSize: 15, // Tamaño de fuente ajustado
+                                        fontWeight: FontWeight.bold, // Negrita
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        )
+                      : const Center(child: Text('No benefits available')),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }
